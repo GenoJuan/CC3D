@@ -51,3 +51,21 @@ for c in nx.connected_component_subgraphs(G):
 	a.std()
 	print "\n"
 	
+
+
+# Obtener la posicion de cada nodo respecto a su centro
+# Crea una red vacia y añade nodos e interacciones.
+G = nx.Graph()
+
+H = nx.path_graph(19)
+G.add_nodes_from(H)
+
+G.add_edges_from([(0,1),(0,2), (0,3), (0,4), (0,5), (0,6), (1,7), (1,8), (1,18), (1,6), (1,2), (2,8), (2,9), (2,10), (2,3), (3,10), (3,11), (3,12), (3,4), (4,12), (4,13), (4,14), (4,5), (5,14), (5,15), (5,16), (5,6), (6,16), (6,17), (6,18), (7,8), (8,9), (9,10), (10,11), (11,12), (12,13), (13,14), (14,15), (15,16), (16,17), (17,18), (18,7)])
+
+# Obten el centro y utiliza el primer elemento (si es que hay mas de uno como referencia) para calcular la distancia a este
+# para cada nodo.
+c = nx.center(G)[0]
+for node in nx.nodes(G):
+    len(nx.shortest_path(G, c, node))
+
+
