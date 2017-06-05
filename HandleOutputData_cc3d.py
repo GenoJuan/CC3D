@@ -20,17 +20,20 @@ class HandleOutputDataClass(SteppableBasePy):
 		self.output_data = open(path_to_file, "w")
 		
 		### Cell attributes to extract
-		self.attributes_to_extract = ['id', 'volume', 'yCOM']
+		self.attributes_to_extract = ['id']
 		### Cell attributes to extract from dict
-		self.attributes_to_extract_from_dict = ['A', 'CsgA', 'an', 'nut'] 
-
+		self.attributes_to_extract_from_dict = ['A'] 
+                
+                ### Internal cellular network
+                self.internal_network = True
+                
 		### Cell neighbordhood
 		### This variable is True is you want to print the cell-to-cell neighbors. It is false otherwise.
 		self.cell_neighborhood = False
 
 		### Fields to extract
 		### Note that this list may be an empty list.
-		self.fields_to_extract = ["Nutrients", "Asignal"]
+		self.fields_to_extract = []
 	def step(self, mcs):
 		### Cell atributes
 		for attribute in self.attributes_to_extract:
@@ -46,12 +49,20 @@ class HandleOutputDataClass(SteppableBasePy):
 				self.output_data.write(" " + str(cell.dict[attribute]))
 			self.output_data.write("\n")
 		
+                ### Internal network
+                if(self.internal_network):
+                    self.output_data.write("MCS" + str(mcs)+ "\tCELL_ATTRIBUTE\tBOOLNETWORK:\t")
+                    for cell in self.cellList:
+                        self.output_data.write(" " + str(cell.dict['BoolNetwork'].state()))
+                    self.output_data.write("\n")
+                    
 		### Cell interactions
 		if(self.cell_neighborhood):
-			self.output_data.write("MCS" + str(mcs)+ "\tCELL_INTERACTION\tCELL_NEIGHBORS:\t")
+                        self.output_data.write("MCS" + str(mcs)+ "\tCELL_INTERACTION\tCELL_NEIGHBORS:\t")
 			for cell in self.cellList:
 				for neighbor , commonSurfaceArea in self.getCellNeighborDataList(cell):
 					if neighbor:
+                                            if neighbor.id > cell.id:
 						self.output_data.write(" " + str(cell.id) + "-" + str(neighbor.id))
 			self.output_data.write("\n")
 
